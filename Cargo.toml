@@ -1,5 +1,5 @@
 [package]
-name = "OracleShield"
+name = "oracle_shield"
 version = "0.1.0"
 edition = "2021"
 
