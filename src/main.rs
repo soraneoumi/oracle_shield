@@ -13,10 +13,13 @@ fn main() {
         eprintln!("Usage: {} -m <memory in GiB>", args[0]);
         process::exit(1);
     }
-    let memory_arg = args[2].parse::<i32>().unwrap_or_else(|err| {
-        eprintln!("Error parsing memory argument: {}", err);
-        process::exit(1);
-    });
+    let memory_arg = match args[2].parse::<i32>() {
+        Ok(memory) => memory,
+        Err(err) => {
+            eprintln!("Error parsing memory argument: {}", err);
+            process::exit(1);
+        }
+    };
     let _buffers = memory::memory(memory_arg);
 
     // Keep the program running until Ctrl-C is pressed

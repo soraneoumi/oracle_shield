@@ -15,7 +15,8 @@ pub fn memory(gib: i32) -> Vec<GiBObject> {
     let mut buffers = Vec::with_capacity(gib as usize);
 
     for _ in 0..gib {
-        let v = Arc::new(RwLock::new(vec![0; GIB]));
+        let v = Arc::new(RwLock::new(Vec::<u8>::with_capacity(GIB)));
+        v.write().unwrap().resize(GIB, 0);
         let o = GiBObject { b: v.clone() };
         buffers.push(o);
     }
