@@ -1,7 +1,6 @@
 use rand::Rng;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Duration;
 
 const KIB: usize = 1024;
 const MIB: usize = 1024 * KIB;
@@ -22,23 +21,11 @@ pub fn memory(gib: i32) -> Vec<GiBObject> {
 
         let handle = thread::spawn(move || {
             let mut rng = rand::thread_rng();
-
-            loop {
-                match v.try_lock() {
-                    Ok(mut v_guard) => {
-                        for byte in &mut *v_guard {
-                            *byte = rng.gen::<u8>();
-                        }
-                        break;
-                    }
-                    Err(_) => {
-                        // Sleep for 10ms and try again
-                        thread::sleep(Duration::from_millis(10));
-                    }
-                }
+            let mut v = v.lock().unwrap();
+            for byte in &mut *v {
+                *byte = rng.gen::<u8>();
             }
         });
-
         threads.push(handle);
     }
 
