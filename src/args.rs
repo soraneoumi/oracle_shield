@@ -1,22 +1,37 @@
-use std::env;
-use std::process;
+use clap::{App, Arg};
 
 pub struct Args {
-    pub memory: i32,
+    pub memory: Option<i32>,
+    pub frequency: Option<i32>,
 }
 
-pub fn parse_args() -> Args {
-    let args: Vec<String> = env::args().collect();
-    if args.len() != 3 {
-        eprintln!("Usage: {} -m <memory in GiB>", args[0]);
-        process::exit(1);
-    }
-    let memory_arg = match args[2].parse::<i32>() {
-        Ok(memory) => memory,
-        Err(err) => {
-            eprintln!("Error parsing memory argument: {}", err);
-            process::exit(1);
-        }
-    };
-    Args { memory: memory_arg }
+pub fn parse_and_validate_args() -> Args {
+    let matches = App::new("oracle_shield")
+        .arg(
+            Arg::new("memory")
+                .short('m')
+                .long("memory")
+                .value_name("MEMORY")
+                .help("Sets the memory in GiB")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::new("frequency")
+                .short('f')
+                .long("frequency")
+                .value_name("FREQUENCY")
+                .help("Sets the frequency of calculation per month")
+                .takes_value(true),
+        )
+        .get_matches();
+
+    let memory = matches
+        .value_of("memory")
+        .map(|s| s.parse::<i32>().expect("Invalid value for memory argument"));
+
+    let frequency = matches
+        .value_of("frequency")
+        .map(|s| s.parse::<i32>().expect("Invalid value for frequency argument"));
+
+    Args { memory, frequency }
 }
