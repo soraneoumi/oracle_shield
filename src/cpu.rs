@@ -1,11 +1,10 @@
-use std::thread;
-use std::time::Duration;
+use tokio::time::{sleep, Duration};
 
-pub fn calculate_pi() {
-    let handle = thread::spawn(|| {
+pub async fn calculate_pi() {
+    let handle = tokio::spawn(async {
         loop {
         }
     });
-    thread::sleep(Duration::from_secs(300));
-    handle.join().unwrap();
+    sleep(Duration::from_secs(300)).await;
+    handle.await.unwrap();
 }

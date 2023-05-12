@@ -1,10 +1,10 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use tokio::signal::ctrl_c;
 
-pub fn set_signal_handler(running: Arc<AtomicBool>) {
+pub async fn set_signal_handler(running: Arc<AtomicBool>) {
     let r = running.clone();
-    ctrlc::set_handler(move || {
-        r.store(false, Ordering::SeqCst);
-    })
-    .expect("Error setting Ctrl-C handler");
+    ctrl_c().await.expect("Error setting Ctrl-C handler");
+    r.store(false, Ordering::SeqCst);
 }
+
