@@ -7,4 +7,3 @@ pub async fn set_signal_handler(running: Arc<AtomicBool>) {
     ctrl_c().await.expect("Error setting Ctrl-C handler");
     r.store(false, Ordering::SeqCst);
 }
-
