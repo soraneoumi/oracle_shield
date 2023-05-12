@@ -10,7 +10,9 @@ OracleShield is a solution developed to counteract Oracle's cloud computing reso
 
 ## Usage
 
-Run `cargo run -- [options]` to start the program.
+1. git clone
+2. Run `cargo build --release` to build the program.
+3. Run ./oracle_shield [option]
 
 Available options include:
 
@@ -18,6 +20,10 @@ Available options include:
 - `-f` or `--frequency`: Specify the frequency of calculating Pi (in times per month).
 
 For example, to use 4 GiB of memory and calculate Pi 10 times per month, run `cargo run -- -m 4 -f 10`.
+
+## Note
+
+The portion implemented for CPU usage has not been tested in practice. If you encounter any issues, please feel free to submit a PR (Pull Request).
 
 ## Contributing
 
