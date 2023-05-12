@@ -6,11 +6,11 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-ctrlc = "3.2.1"
-rand = "0.8.4"
+ctrlc = "3.2"
+rand = "0.8"
 rayon = "1.5"
 nom = "7"
-tokio = { version = "1.14", features = ["full"] }
+tokio = { version = "1.0", features = ["full"] }
 
 [profile.release]
 lto = true
