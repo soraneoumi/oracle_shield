@@ -19,7 +19,7 @@ Available options include:
 - `-m` or `--memory`: Specify the amount of memory to use (in GiB).
 - `-f` or `--frequency`: Specify the frequency of calculating Pi (in times per month).
 
-For example, to use 4 GiB of memory and calculate Pi 10 times per month, run './oracle_shield -m 4 -f 10'.
+For example, to use 4 GiB of memory and calculate Pi 10 times per month, run `./oracle_shield -m 4 -f 10`.
 
 ## Note
 
