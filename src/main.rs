@@ -13,19 +13,14 @@ use tokio::time::sleep;
 #[tokio::main]
 async fn main() {
     let Args { memory, frequency } = parse_and_validate_args();
-    let buffers = if let Some(memory) = memory {
-        Some(memory::memory(memory))
-    } else {
-        None
-    };
-    let interval = if let Some(frequency) = frequency {
-        Duration::from_secs(30 * 24 * 60 * 60 / frequency as u64)
-    } else {
-        Duration::from_secs(u64::MAX)
-    };
+    let buffers = memory.map(memory::memory);
+    let interval = frequency
+        .map(|f| Duration::from_secs(30 * 24 * 60 * 60 / f as u64))
+        .unwrap_or(Duration::from_secs(u64::MAX));
     let running = Arc::new(AtomicBool::new(true));
     set_signal_handler(running.clone()).await;
     let mut last_calculation = Instant::now();
+    let mut calculation_start_time = None;
     while running.load(Ordering::SeqCst) {
         if let Some(buffers) = &buffers {
             for buffer in buffers {
@@ -34,10 +29,18 @@ async fn main() {
         }
 
         if last_calculation.elapsed() >= interval {
-            let n = 10;
-            cpu::calculate_pi(n).await;
+            calculation_start_time = Some(Instant::now());
             last_calculation = Instant::now();
         }
+
+        if let Some(start_time) = calculation_start_time {
+            if start_time.elapsed() < Duration::from_secs(5 * 60) {
+                cpu::calculate_pi(Duration::from_secs(5 * 60)).await;
+            } else {
+                calculation_start_time = None;
+            }
+        }
+
         sleep(Duration::from_millis(100)).await;
     }
 }
