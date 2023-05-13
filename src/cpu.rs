@@ -1,33 +1,14 @@
 use tokio::time::{sleep, Duration};
-use rand::rngs::OsRng;
-use rand::RngCore;
 
-pub async fn calculate_pi() {
-    let handle = tokio::spawn(async {
-        let mut rng = OsRng;
+pub async fn calculate_pi(n: u64) -> f64 {
+    let mut pi = 0.0;
+    let mut sign = 1.0;
 
-        let mut total_points = 0;
-        let mut inside_circle = 0;
+    for k in 0..n {
+        pi += sign * (4.0 / (8.0 * k as f64 + 1.0) - 2.0 / (8.0 * k as f64 + 4.0) - 1.0 / (8.0 * k as f64 + 5.0) - 1.0 / (8.0 * k as f64 + 6.0)) / (16.0_f64).powf(k as f64);
+        sign *= -1.0;
+        sleep(Duration::from_millis(100)).await;
+    }
 
-        loop {
-            let mut bytes = [0; 8];
-            rng.fill_bytes(&mut bytes);
-
-            let x: f64 = f64::from_le_bytes(bytes[0..4].try_into().unwrap()) * 2.0 - 1.0;
-            let y: f64 = f64::from_le_bytes(bytes[4..8].try_into().unwrap()) * 2.0 - 1.0;
-
-            total_points += 1;
-            if x * x + y * y <= 1.0 {
-                inside_circle += 1;
-            }
-
-            let _pi_approximation = 4.0 * (inside_circle as f64) / (total_points as f64);
-
-            // Adjust sleep duration based on desired accuracy
-            sleep(Duration::from_secs(1)).await;
-        }
-    });
-
-    sleep(Duration::from_secs(300)).await;
-    handle.await.unwrap();
+    pi
 }

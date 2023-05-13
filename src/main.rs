@@ -34,7 +34,8 @@ async fn main() {
         }
 
         if last_calculation.elapsed() >= interval {
-            cpu::calculate_pi().await;
+            let n = 10;
+            cpu::calculate_pi(n).await;
             last_calculation = Instant::now();
         }
         sleep(Duration::from_millis(100)).await;
