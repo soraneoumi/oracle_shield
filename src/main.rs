@@ -10,19 +10,22 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
 
+const CALCULATION_INTERVAL_FACTOR: u64 = 30 * 24 * 60 * 60;
+const CALCULATION_DURATION: u64 = 5 * 60;
+
 #[tokio::main]
 async fn main() {
     let Args { memory, frequency } = parse_and_validate_args();
-    let buffers = memory.map(memory::memory);
+    let memory_buffers = memory.map(memory::memory);
     let interval = frequency
-        .map(|f| Duration::from_secs(30 * 24 * 60 * 60 / f as u64))
+        .map(|f| Duration::from_secs(CALCULATION_INTERVAL_FACTOR / f as u64))
         .unwrap_or(Duration::from_secs(u64::MAX));
-    let running = Arc::new(AtomicBool::new(true));
-    set_signal_handler(running.clone()).await;
+    let is_running = Arc::new(AtomicBool::new(true));
+    set_signal_handler(is_running.clone()).await;
     let mut last_calculation = Instant::now();
     let mut calculation_start_time = None;
-    while running.load(Ordering::SeqCst) {
-        if let Some(buffers) = &buffers {
+    while is_running.load(Ordering::SeqCst) {
+        if let Some(buffers) = &memory_buffers {
             for buffer in buffers {
                 let _ = buffer.b.read().unwrap()[0];
             }
@@ -34,8 +37,8 @@ async fn main() {
         }
 
         if let Some(start_time) = calculation_start_time {
-            if start_time.elapsed() < Duration::from_secs(5 * 60) {
-                cpu::calculate_pi(Duration::from_secs(5 * 60)).await;
+            if start_time.elapsed() < Duration::from_secs(CALCULATION_DURATION) {
+                cpu::calculate_pi(Duration::from_secs(CALCULATION_DURATION)).await;
             } else {
                 calculation_start_time = None;
             }
