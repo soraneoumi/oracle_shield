@@ -7,8 +7,7 @@ use args::{parse_and_validate_args, Args};
 use signal::set_signal_handler;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
-use std::time::{Duration, Instant};
-use tokio::time::sleep;
+use tokio::time::{Duration, Instant, sleep};
 
 const CALCULATION_INTERVAL_FACTOR: u64 = 30 * 24 * 60 * 60;
 const CALCULATION_DURATION: u64 = 5 * 60;
