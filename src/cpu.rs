@@ -1,6 +1,11 @@
 use tokio::time::{Duration, Instant, sleep_until};
+use std::time::SystemTime;
+use chrono::{DateTime, Local};
 
 pub async fn calculate_pi(duration: Duration) -> f64 {
+    let now: DateTime<Local> = SystemTime::now().into();
+    println!("{} Started using CPU", now.format("%Y-%m-%d %H:%M:%S").to_string());
+
     let mut pi = 0.0;
     let mut sign = 1.0;
     let start_time = Instant::now();

@@ -2,6 +2,8 @@ use rand::Rng;
 use rayon::prelude::*;
 use std::sync::Arc;
 use std::sync::RwLock;
+use std::time::SystemTime;
+use chrono::{DateTime, Local};
 
 const KIB: usize = 1024;
 const MIB: usize = 1024 * KIB;
@@ -12,6 +14,9 @@ pub struct GiBObject {
 }
 
 pub fn memory(gib: i32) -> Vec<GiBObject> {
+    let now: DateTime<Local> = SystemTime::now().into();
+    println!("{} Started using memory", now.format("%Y-%m-%d %H:%M:%S").to_string());
+
     let mut buffers = Vec::with_capacity(gib as usize);
 
     for _ in 0..gib {
