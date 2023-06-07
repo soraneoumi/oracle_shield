@@ -1,3 +1,5 @@
+use rand::SeedableRng;
+use rand::rngs::SmallRng;
 use rand::Rng;
 use rayon::prelude::*;
 use std::sync::Arc;
@@ -27,7 +29,7 @@ pub fn memory(gib: i32) -> Vec<GiBObject> {
     }
 
     buffers.par_iter().for_each(|o| {
-        let mut rng = rand::thread_rng();
+        let mut rng = SmallRng::from_entropy();
         let mut v = o.b.write().unwrap();
         for byte in &mut *v {
             *byte = rng.gen::<u8>();
